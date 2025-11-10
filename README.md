@@ -39,3 +39,9 @@ sql/
 
 uploads/                 # Si hay adjuntos
 README.md
+
+## Extras añadidos: 
+
+## Cómo arrancarlo en Ubuntu
+git clone https://github.com/NoelBallester/proyectoIAW.git
+cd proyecyoIAW
