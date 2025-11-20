@@ -4,8 +4,8 @@
 // Configuración de la base de datos
 $host = '%';
 $db   = 'inventario_iaw';
-$user = 'NoelYAngela';      // Cambia esto si tu usuario no es root
-$pass = 'IAWAN';          // Pon tu contraseña de MySQL aquí si tienes
+$user = 'NoelYAngela';
+$pass = 'IAWAN';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
