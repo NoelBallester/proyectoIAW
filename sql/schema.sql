@@ -1,12 +1,9 @@
 -- 1. PREPARACIÓN DE LA BASE DE DATOS
 -- ---------------------------------------------------------
--- Borramos la BD si existe para empezar de cero (útil para resetear)
 DROP DATABASE IF EXISTS inventario_iaw;
 
--- Creamos la BD con cotejamiento utf8mb4 (soporta emojis y acentos perfectamente)
 CREATE DATABASE inventario_iaw CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Seleccionamos la base de datos para ejecutar lo siguiente dentro de ella
 USE inventario_iaw;
 
 
@@ -41,13 +38,9 @@ CREATE TABLE auditoria (
 
 -- 3. GESTIÓN DE USUARIOS DE MYSQL (ACCESO REMOTO)
 -- ---------------------------------------------------------
--- Esto crea un usuario 'NoelYA' que se puede conectar desde CUALQUIER IP ('%')
--- Cambia 'IAWAN' por la contraseña que tú quieras usar en tu proyecto
 
 CREATE USER IF NOT EXISTS 'NoelYAngela'@'%' IDENTIFIED BY 'IAWAN';
 
--- Le damos permisos TOTALES, pero SOLO sobre esta base de datos (seguridad básica)
-GRANT ALL PRIVILEGES ON inventario_iaw.* TO 'NoelYA'@'%';
+GRANT ALL PRIVILEGES ON inventario_iaw.* TO 'NoelYAngela'@'%';
 
--- Aplicamos los cambios de permisos inmediatamente
 FLUSH PRIVILEGES;
