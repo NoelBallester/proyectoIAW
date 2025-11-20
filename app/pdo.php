@@ -21,4 +21,13 @@ try {
     // En producción no mostraríamos el error real, pero para desarrollo ayuda
     die("Error de conexión a la base de datos: " . $e->getMessage());
 }
+
+/**
+ * Devuelve la instancia PDO creada arriba.
+ * Función auxiliar para usar en otras partes del proyecto.
+ */
+function getPDO() {
+    global $pdo;
+    return $pdo;
+}
 ?>
