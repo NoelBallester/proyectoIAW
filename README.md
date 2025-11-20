@@ -45,3 +45,16 @@ README.md
 ## Cómo arrancarlo en Ubuntu
 git clone https://github.com/NoelBallester/proyectoIAW.git
 cd proyecyoIAW
+
+--- 
+## Base de datos
+La base de datos se llama "iaw" y está creada en MySQL. 
+
+### Archivos SQL
+- ''
+- ''
+
+### Cómo importar la base de datos 
+En bash:
+mysql -u root -p 
+Usuario:
