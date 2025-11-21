@@ -22,7 +22,7 @@ if ($search) {
     $params[] = "%$search%";
 }
 
-$sql .= " ORDER BY creado DESC LIMIT $perPage OFFSET $offset";
+$sql .= " ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $tickets = $stmt->fetchAll();
@@ -72,7 +72,7 @@ $totalPages = ceil($total / $perPage);
             <td><?= htmlspecialchars($t['titulo'] ?? $t['title'] ?? '') ?></td>
             <td><?= htmlspecialchars($t['descripcion'] ?? $t['description'] ?? '') ?></td>
             <td><?= htmlspecialchars($t['estado'] ?? $t['status'] ?? '') ?></td>
-            <td><?= htmlspecialchars($t['creado'] ?? $t['created_at'] ?? '') ?></td>
+            <td><?= htmlspecialchars($t['created_at'] ?? $t['creado'] ?? '') ?></td>
             <td>
                 <a href="ver_tickets.php?id=<?= urlencode($t['id']) ?>">Ver</a> |
                 <a href="editar_ticket.php?id=<?= urlencode($t['id']) ?>">Editar</a> |
