@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../app/auth.php';
 require_login();
 require_once __DIR__ . '/../app/pdo.php';
+require_once __DIR__ . '/../app/csrf.php';
 
 $pdo = getPDO();
 // Parámetros
@@ -71,8 +72,14 @@ $totalPages = ceil($total / $perPage);
                 <td><?= htmlspecialchars($t['creado']) ?></td>
                 <td>
                     <a href="ver_tickets.php?id=<?= urlencode($t['id']) ?>">Ver</a>
+                    |
                     <a href="editar_ticket.php?id=<?= urlencode($t['id']) ?>">Editar</a>
-                    <a href="borrar_ticket.php?id=<?= urlencode($t['id']) ?>" onclick="return confirm('¿Estás seguro de que quieres borrar este ticket?')">Borrar</a>
+                    |
+                    <form action="borrar_ticket.php" method="post" style="display:inline" onsubmit="return confirm('¿Estás seguro de que quieres borrar este ticket?')">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="id" value="<?= htmlspecialchars($t['id']) ?>">
+                        <button type="submit">Borrar</button>
+                    </form>
                 </td>
             </tr>
             <?php endforeach; ?>

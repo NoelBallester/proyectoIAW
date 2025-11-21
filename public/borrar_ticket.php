@@ -1,15 +1,26 @@
 <?php
-require_once 'auth.php';
+require_once __DIR__ . '/../app/auth.php';
 require_login();
-require_once 'pdo.php';
+require_once __DIR__ . '/../app/pdo.php';
+require_once __DIR__ . '/../app/csrf.php';
 
 $pdo = getPDO();
 
-$id = $_GET['id'] ?? null;
+// Solo aceptar POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo "Método no permitido.";
+    exit;
+}
+
+// Comprobar CSRF
+check_csrf();
+
+$id = $_POST['id'] ?? null;
 if (!$id || !is_numeric($id)) {
     http_response_code(400);
     echo "ID de ticket inválido.";
-    exit;   
+    exit;
 }
 
 try {
@@ -18,15 +29,11 @@ try {
     // Verificar que el ticket existe
     $stmt = $pdo->prepare("SELECT * FROM tickets WHERE id = ? AND deleted_at IS NULL");
     $stmt->execute([$id]);
-    $ticket = $stmt->fetch();
+    $ticket = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$ticket) {
         throw new Exception("Ticket no encontrado.");
     }
 
-    // Simulacion d fallo (descomentar para probar manejo de errores
-    // throw new Exception("Error simulado para probar manejo de transacciones."
-
-    
     // Marcar el ticket como borrado (soft delete)
     $stmt = $pdo->prepare("UPDATE tickets SET deleted_at = NOW() WHERE id = ?");
     $stmt->execute([$id]);
@@ -37,9 +44,8 @@ try {
 
     $pdo->commit();
     header('Location: lista_tickets.php');
-    echo "Ticket borrado correctamente.";
     exit;
-    
+
 } catch (Exception $e) {
     $pdo->rollBack();
     http_response_code(500);

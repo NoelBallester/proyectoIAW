@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../app/auth.php';
 require_login();
 require_once __DIR__ . '/../app/pdo.php';
+require_once __DIR__ . '/../app/csrf.php';
 
 $pdo = getPDO();
 
@@ -23,14 +24,6 @@ if (!$ticket) {
     http_response_code(404);
     echo "Incidencia no encontrada.";
     exit;
-}
-
-// Asegurar token CSRF en caso de formularios futuros
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 $created = $ticket['created_at'] ?? $ticket['creado'] ?? '—';
@@ -61,7 +54,11 @@ $updated = $ticket['updated_at'] ?? $ticket['actualizado'] ?? null;
     <div class="acciones">
         <a href="editar_ticket.php?id=<?= urlencode($ticket['id']) ?>">Editar</a>
         |
-        <a href="borrar_ticket.php?id=<?= urlencode($ticket['id']) ?>" onclick="return confirm('¿Estás seguro de que quieres borrar este ticket?')">Borrar</a>
+        <form action="borrar_ticket.php" method="post" style="display:inline" onsubmit="return confirm('¿Estás seguro de que quieres borrar este ticket?')">
+            <?= csrf_field() ?>
+            <input type="hidden" name="id" value="<?= htmlspecialchars($ticket['id']) ?>">
+            <button type="submit">Borrar</button>
+        </form>
         |
         <a href="lista_tickets.php">Volver al listado</a>
     </div>
