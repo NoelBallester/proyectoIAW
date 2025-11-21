@@ -28,7 +28,6 @@ $username = $user['username'] ?? 'Usuario';
     <nav>
         <a href="lista_tickets.php">📋 Listado de incidencias</a>
         <a href="editar_ticket.php">➕ Crear incidencia</a>
-        <a href="borrar_ticket.php">🗑️ Borrar incidencia</a>
         <a href="preferencias.php">⚙️ Preferencias</a>
         <form action="logout.php" method="post" style="display:inline">
             <button type="submit">🚪 Cerrar sesión</button>
