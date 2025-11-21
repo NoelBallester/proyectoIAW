@@ -1,6 +1,6 @@
 <?php
 // Rutas corregidas hacia la carpeta app
-session_start()
+session_start();
 require_once __DIR__ . '/../app/pdo.php';
 require_once __DIR__ . '/../app/auth.php';
 
