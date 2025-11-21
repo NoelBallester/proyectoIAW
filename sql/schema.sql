@@ -35,6 +35,17 @@ CREATE TABLE auditoria (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabla de Tickets (Soporte técnico)
+CREATE TABLE tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    priority ENUM('baja','media','alta') DEFAULT 'media',
+    status ENUM('abierta','cerrada') DEFAULT 'abierta',
+    creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    actualizado TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    eliminado TIMESTAMP NULL DEFAULT NULL
+);
 
 -- 3. GESTIÓN DE USUARIOS DE MYSQL (ACCESO REMOTO)
 -- ---------------------------------------------------------
