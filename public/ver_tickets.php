@@ -8,54 +8,67 @@ require_once __DIR__ . '/../app/theme.php';
 
 $pdo = getPDO();
 
-// Validar ID de forma segura
+// Total de tickets activos
+$totalStmt = $pdo->query('SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL');
+$totalTickets = (int)$totalStmt->fetchColumn();
+
+// Determinar posición y ID según parámetros: id o pos
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if ($id === false || $id === null || $id <= 0) {
-    http_response_code(400);
-    echo "ID de incidencia inválido.";
-    exit;
+$pos = filter_input(INPUT_GET, 'pos', FILTER_VALIDATE_INT);
+
+if ($id === false) { $id = null; }
+if ($pos === false) { $pos = null; }
+
+if ($id === null && ($pos === null || $pos <= 0)) {
+    // Por defecto mostrar primer ticket
+    $pos = 1;
 }
 
-// Buscar ticket (ignorar tickets borrados)
-$stmt = $pdo->prepare('SELECT * FROM tickets WHERE id = ? AND deleted_at IS NULL');
-$stmt->execute([$id]);
-$ticket = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$ticket) {
-    http_response_code(404);
-    echo "Incidencia no encontrada.";
-    exit;
+// Si se indica pos (posición 1..total) obtener el ticket por offset ordenado por id
+if ($id === null && $pos !== null) {
+    if ($pos > $totalTickets) { $pos = $totalTickets; }
+    $offset = $pos - 1;
+    $stmtPos = $pdo->prepare('SELECT * FROM tickets WHERE deleted_at IS NULL ORDER BY id ASC LIMIT 1 OFFSET ?');
+    $stmtPos->execute([$offset]);
+    $ticket = $stmtPos->fetch(PDO::FETCH_ASSOC);
+    if (!$ticket) {
+        http_response_code(404);
+        echo 'Incidencia no encontrada.';
+        exit;
+    }
+    $id = (int)$ticket['id'];
+    $position = $pos; // posición solicitada
+} else {
+    // Modo basado en id
+    if ($id === null || $id <= 0) {
+        http_response_code(400);
+        echo 'ID de incidencia inválido.';
+        exit;
+    }
+    $stmt = $pdo->prepare('SELECT * FROM tickets WHERE id = ? AND deleted_at IS NULL');
+    $stmt->execute([$id]);
+    $ticket = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$ticket) {
+        http_response_code(404);
+        echo 'Incidencia no encontrada.';
+        exit;
+    }
+    // Calcular posición del id actual en el orden ascendente
+    $posStmt = $pdo->prepare('SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL AND id <= ?');
+    $posStmt->execute([$id]);
+    $position = (int)$posStmt->fetchColumn();
 }
 
 $created = $ticket['created_at'] ?? '—';
 $updated = $ticket['updated_at'] ?? null;
-// Navegación entre tickets (prev/next/first/last)
-// Siguiente ticket (ID mayor)
-$nextStmt = $pdo->prepare('SELECT id FROM tickets WHERE id > ? AND deleted_at IS NULL ORDER BY id ASC LIMIT 1');
-$nextStmt->execute([$id]);
-$nextId = $nextStmt->fetchColumn();
 
-// Anterior ticket (ID menor)
-$prevStmt = $pdo->prepare('SELECT id FROM tickets WHERE id < ? AND deleted_at IS NULL ORDER BY id DESC LIMIT 1');
-$prevStmt->execute([$id]);
-$prevId = $prevStmt->fetchColumn();
-
-// Primer ticket
-$firstStmt = $pdo->query('SELECT id FROM tickets WHERE deleted_at IS NULL ORDER BY id ASC LIMIT 1');
-$firstId = $firstStmt->fetchColumn();
-
-// Último ticket
-$lastStmt = $pdo->query('SELECT id FROM tickets WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1');
-$lastId = $lastStmt->fetchColumn();
-
-// Posición actual (cuántos con id <= actual)
-$posStmt = $pdo->prepare('SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL AND id <= ?');
-$posStmt->execute([$id]);
-$position = (int)$posStmt->fetchColumn();
-
-// Total tickets
-$totalStmt = $pdo->query('SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL');
-$totalTickets = (int)$totalStmt->fetchColumn();
+// IDs para navegación por posición (no dependen de huecos)
+$hasPrev = $position > 1;
+$hasNext = $position < $totalTickets;
+$firstPos = 1;
+$lastPos = $totalTickets;
+$prevPos = $hasPrev ? $position - 1 : null;
+$nextPos = $hasNext ? $position + 1 : null;
 ?>
 
 <!DOCTYPE html>
@@ -94,25 +107,19 @@ $totalTickets = (int)$totalStmt->fetchColumn();
             <a href="lista_tickets.php" class="btn-secondary">← Volver</a>
         </div>
         <div class="pagination" style="margin-top:35px;">
-            <?php if ($firstId && $id != $firstId): ?>
-                <a href="ver_tickets.php?id=<?= $firstId ?>" title="Primer">⏮️</a>
+            <?php if ($hasPrev): ?>
+                <a href="ver_tickets.php?pos=<?= $firstPos ?>" title="Primer">⏮️</a>
+                <a href="ver_tickets.php?pos=<?= $prevPos ?>" title="Anterior">◀️</a>
             <?php else: ?>
                 <strong style="opacity:.4">⏮️</strong>
-            <?php endif; ?>
-            <?php if ($prevId): ?>
-                <a href="ver_tickets.php?id=<?= $prevId ?>" title="Anterior">◀️</a>
-            <?php else: ?>
                 <strong style="opacity:.4">◀️</strong>
             <?php endif; ?>
             <strong><?= $position ?> / <?= $totalTickets ?></strong>
-            <?php if ($nextId): ?>
-                <a href="ver_tickets.php?id=<?= $nextId ?>" title="Siguiente">▶️</a>
+            <?php if ($hasNext): ?>
+                <a href="ver_tickets.php?pos=<?= $nextPos ?>" title="Siguiente">▶️</a>
+                <a href="ver_tickets.php?pos=<?= $lastPos ?>" title="Último">⏭️</a>
             <?php else: ?>
                 <strong style="opacity:.4">▶️</strong>
-            <?php endif; ?>
-            <?php if ($lastId && $id != $lastId): ?>
-                <a href="ver_tickets.php?id=<?= $lastId ?>" title="Último">⏭️</a>
-            <?php else: ?>
                 <strong style="opacity:.4">⏭️</strong>
             <?php endif; ?>
         </div>
