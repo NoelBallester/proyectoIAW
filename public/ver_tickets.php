@@ -29,6 +29,33 @@ if (!$ticket) {
 
 $created = $ticket['created_at'] ?? '—';
 $updated = $ticket['updated_at'] ?? null;
+// Navegación entre tickets (prev/next/first/last)
+// Siguiente ticket (ID mayor)
+$nextStmt = $pdo->prepare('SELECT id FROM tickets WHERE id > ? AND deleted_at IS NULL ORDER BY id ASC LIMIT 1');
+$nextStmt->execute([$id]);
+$nextId = $nextStmt->fetchColumn();
+
+// Anterior ticket (ID menor)
+$prevStmt = $pdo->prepare('SELECT id FROM tickets WHERE id < ? AND deleted_at IS NULL ORDER BY id DESC LIMIT 1');
+$prevStmt->execute([$id]);
+$prevId = $prevStmt->fetchColumn();
+
+// Primer ticket
+$firstStmt = $pdo->query('SELECT id FROM tickets WHERE deleted_at IS NULL ORDER BY id ASC LIMIT 1');
+$firstId = $firstStmt->fetchColumn();
+
+// Último ticket
+$lastStmt = $pdo->query('SELECT id FROM tickets WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1');
+$lastId = $lastStmt->fetchColumn();
+
+// Posición actual (cuántos con id <= actual)
+$posStmt = $pdo->prepare('SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL AND id <= ?');
+$posStmt->execute([$id]);
+$position = (int)$posStmt->fetchColumn();
+
+// Total tickets
+$totalStmt = $pdo->query('SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL');
+$totalTickets = (int)$totalStmt->fetchColumn();
 ?>
 
 <!DOCTYPE html>
@@ -65,6 +92,29 @@ $updated = $ticket['updated_at'] ?? null;
                 <button type="submit">🗑️ Borrar</button>
             </form>
             <a href="lista_tickets.php" class="btn-secondary">← Volver</a>
+        </div>
+        <div class="pagination" style="margin-top:35px;">
+            <?php if ($firstId && $id != $firstId): ?>
+                <a href="ver_tickets.php?id=<?= $firstId ?>" title="Primer">⏮️</a>
+            <?php else: ?>
+                <strong style="opacity:.4">⏮️</strong>
+            <?php endif; ?>
+            <?php if ($prevId): ?>
+                <a href="ver_tickets.php?id=<?= $prevId ?>" title="Anterior">◀️</a>
+            <?php else: ?>
+                <strong style="opacity:.4">◀️</strong>
+            <?php endif; ?>
+            <strong><?= $position ?> / <?= $totalTickets ?></strong>
+            <?php if ($nextId): ?>
+                <a href="ver_tickets.php?id=<?= $nextId ?>" title="Siguiente">▶️</a>
+            <?php else: ?>
+                <strong style="opacity:.4">▶️</strong>
+            <?php endif; ?>
+            <?php if ($lastId && $id != $lastId): ?>
+                <a href="ver_tickets.php?id=<?= $lastId ?>" title="Último">⏭️</a>
+            <?php else: ?>
+                <strong style="opacity:.4">⏭️</strong>
+            <?php endif; ?>
         </div>
     </div>
 </div>
