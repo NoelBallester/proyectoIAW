@@ -1,3 +1,4 @@
+use inventario_iaw;
 -- INSERTAR USUARIO DE PRUEBA PARA LA APLICACIÓN WEB
 -- ---------------------------------------------------------
 -- Usuario: admin
@@ -7,7 +8,7 @@ INSERT INTO usuarios (username, password) VALUES
 ('admin', '$2y$10$/tcIacKZhwqpQyvtHMmVsOQWwK4yrk9JtDs4GFFWdVN7gEErfYsda');
 
 -- 50 tickets de prueba
-INSERT INTO tickets (title, description, priority, status) VALUES
+INSERT INTO tickets (titulo, descripcion, prioridad, estado) VALUES
 ('Ticket 1', 'Descripción de prueba 1', 'baja', 'abierta'),
 ('Ticket 2', 'Descripción de prueba 2', 'media', 'abierta'),
 ('Ticket 3', 'Descripción de prueba 3', 'alta', 'cerrada'),

@@ -1,0 +1,16 @@
+/* theme-light.css */
+:root, .theme-light {
+  --gradient-start:#667eea; --gradient-end:#764ba2;
+  --color-text:#222; --color-surface:#ffffff;
+  --color-on-primary:#ffffff;
+  --accent:#667eea; --accent-focus-shadow:rgba(102,126,234,0.25);
+  --pill-bg:rgba(255,255,255,0.25);
+  --btn-shadow:rgba(102,126,234,0.3); --btn-shadow-hover:rgba(102,126,234,0.5);
+  --border-color:#e0e0e0;
+  --secondary-bg:#f0f0f0; --secondary-bg-hover:#e0e0e0; --secondary-text:#555;
+  --table-head-bg:#f4f4f4; --row-hover-bg:#fafafa;
+  --input-bg:#ffffff;
+  --error-start:#f093fb; --error-end:#f5576c;
+  --danger-bg:#f5576c; --danger-bg-hover:#d94458;
+}
+body.theme-light { color:var(--color-text); }
