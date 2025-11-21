@@ -5,7 +5,7 @@ require_login();
 // Si quieres mostrar el nombre del usuario:
 require_once __DIR__ . '/../app/pdo.php';
 $pdo = getPDO();
-$stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username FROM usuarios WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 $username = $user['username'] ?? 'Usuario';
