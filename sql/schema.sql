@@ -10,6 +10,18 @@ USE inventario_iaw;
 -- 2. CREACIÓN DE TABLAS
 -- ---------------------------------------------------------
 
+-- Tabla de Tickets (incidencias)
+CREATE TABLE IF NOT EXISTS tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    descripcion TEXT NOT NULL,
+    prioridad ENUM('baja','media','alta') DEFAULT 'media',
+    estado ENUM('abierta','en progreso','cerrada') DEFAULT 'abierta',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
+);
+
 -- Tabla de Usuarios (para el login de la aplicación web)
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -33,6 +45,15 @@ CREATE TABLE auditoria (
     id INT AUTO_INCREMENT PRIMARY KEY,
     accion VARCHAR(255) NOT NULL, -- Descripción de lo que pasó (Ej: "Borrado item 5")
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Auditoría de tickets
+CREATE TABLE IF NOT EXISTS ticket_audit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticket_id INT NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX (ticket_id)
 );
 
 -- Tabla de Tickets (Soporte técnico)

@@ -9,7 +9,7 @@ $titulo = '';
 $descripcion = '';
 $prioridad = 'media';
 $estado = 'abierta';
-$id = $_GET['id'] ?? null;
+$id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
 // Si viene un ID, cargar el ticket existente
 if ($id && $_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -18,10 +18,14 @@ if ($id && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     $ticket = $stmt->fetch();
     if (!$ticket) {
         http_response_code(404);
-        echo "El ticket no ha sidoencontrado.";
+        echo "El ticket no ha sido encontrado.";
         exit;
     }
-    extract($ticket); // Cargar variables con los nombres de las columnas correspondientes
+    // Pre-cargar campos del ticket
+    $titulo = $ticket['titulo'] ?? '';
+    $descripcion = $ticket['descripcion'] ?? '';
+    $prioridad = $ticket['prioridad'] ?? 'media';
+    $estado = $ticket['estado'] ?? 'abierta';
 }
 
 // Si se envia el formulario:
@@ -45,11 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errores)) {
         if ($id) {
             // Actualizar
-            $stmt = $pdo->prepare("UPDATE tickets SET titulo = ?, descripcion = ?, prioridad = ?, estado = ? WHERE id = ?");
+            $stmt = $pdo->prepare("UPDATE tickets SET titulo = ?, descripcion = ?, prioridad = ?, estado = ?, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$titulo, $descripcion, $prioridad, $estado, $id]);
         } else {
             // Insertar nuevo
-            $stmt = $pdo->prepare("INSERT INTO tickets (titulo, descripcion, prioridad, estado, creado) VALUES (?, ?, ?, ?, NOW())");
+            $stmt = $pdo->prepare("INSERT INTO tickets (titulo, descripcion, prioridad, estado, created_at) VALUES (?, ?, ?, ?, NOW())");
             $stmt->execute([$titulo, $descripcion, $prioridad, $estado]);
         }
         header('Location: lista_tickets.php');

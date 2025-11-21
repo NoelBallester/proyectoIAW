@@ -3,10 +3,8 @@
 require_once __DIR__ . '/../app/auth.php';
 require_login();
 require_once __DIR__ . '/../app/pdo.php';
-// CSRF helper (se carga más abajo si existe)
-if (file_exists(__DIR__ . '/../app/csrf.php')) {
-    require_once __DIR__ . '/../app/csrf.php';
-}
+// CSRF helper
+require_once __DIR__ . '/../app/csrf.php';
 
 $pdo = getPDO();
 
@@ -16,26 +14,24 @@ $page = max(1, intval($_GET['page'] ?? 1));
 $perPage = 10;
 $offset = ($page - 1) * $perPage;
 
-// La base de datos actual tiene tabla 'items' (según schema.sql). Adaptamos listado.
-// Campos: id, nombre, categoria, ubicacion, stock, created_at
-$itemsSql = "SELECT * FROM items";
+// Listado de incidencias (tabla tickets)
+$sql = "SELECT id, titulo, descripcion, prioridad, estado, created_at FROM tickets WHERE deleted_at IS NULL";
 $params = [];
 if ($search) {
-    $itemsSql .= " WHERE (nombre LIKE ? OR categoria LIKE ? OR ubicacion LIKE ?)";
-    $params[] = "%$search%";
+    $sql .= " AND (titulo LIKE ? OR descripcion LIKE ?)";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
 
-$itemsSql .= " ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
-$stmt = $pdo->prepare($itemsSql);
+$sql .= " ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
+$stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-$items = $stmt->fetchAll();
+$tickets = $stmt->fetchAll();
 
 // Conteo total para paginación
-$countSql = "SELECT COUNT(*) FROM items";
+$countSql = "SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL";
 if ($search) {
-    $countSql .= " WHERE (nombre LIKE ? OR categoria LIKE ? OR ubicacion LIKE ?)";
+    $countSql .= " AND (titulo LIKE ? OR descripcion LIKE ?)";
 }
 $countStmt = $pdo->prepare($countSql);
 $countStmt->execute($params);
@@ -55,7 +51,7 @@ $totalPages = max(1, ceil($total / $perPage));
     </style>
 </head>
 <body>
-    <h1>Listado de ítems</h1>
+    <h1>Listado de incidencias</h1>
 
     <form method="GET">
         <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Buscar">
@@ -65,20 +61,28 @@ $totalPages = max(1, ceil($total / $perPage));
     <table>
         <tr>
             <th>ID</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Ubicación</th>
-            <th>Stock</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Estado</th>
             <th>Creado</th>
+            <th>Acciones</th>
         </tr>
-        <?php foreach ($items as $it): ?>
+        <?php foreach ($tickets as $t): ?>
         <tr>
-            <td><?= htmlspecialchars($it['id']) ?></td>
-            <td><?= htmlspecialchars($it['nombre']) ?></td>
-            <td><?= htmlspecialchars($it['categoria']) ?></td>
-            <td><?= htmlspecialchars($it['ubicacion']) ?></td>
-            <td><?= htmlspecialchars($it['stock']) ?></td>
-            <td><?= htmlspecialchars($it['created_at']) ?></td>
+            <td><?= htmlspecialchars($t['id']) ?></td>
+            <td><?= htmlspecialchars($t['titulo']) ?></td>
+            <td><?= htmlspecialchars($t['descripcion']) ?></td>
+            <td><?= htmlspecialchars($t['estado']) ?></td>
+            <td><?= htmlspecialchars($t['created_at']) ?></td>
+            <td>
+                <a href="ver_tickets.php?id=<?= urlencode($t['id']) ?>">Ver</a> |
+                <a href="editar_ticket.php?id=<?= urlencode($t['id']) ?>">Editar</a> |
+                <form action="borrar_ticket.php" method="post" style="display:inline" onsubmit="return confirm('¿Seguro?')">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="id" value="<?= htmlspecialchars($t['id']) ?>">
+                    <button type="submit">Borrar</button>
+                </form>
+            </td>
         </tr>
         <?php endforeach; ?>
     </table>
