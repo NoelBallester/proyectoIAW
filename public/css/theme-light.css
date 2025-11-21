@@ -1,6 +1,7 @@
 /* theme-light.css */
 :root, .theme-light {
   --gradient-start:#667eea; --gradient-end:#764ba2;
+  --bg-main: linear-gradient(135deg,#667eea 0%, #764ba2 100%);
   --color-text:#222; --color-surface:#ffffff;
   --color-on-primary:#ffffff;
   --accent:#667eea; --accent-focus-shadow:rgba(102,126,234,0.25);

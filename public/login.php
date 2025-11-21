@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?= theme_styles() ?>
 </head>
 <body class="<?= htmlspecialchars(body_theme_class()) ?>">
-    <div class="login-container">
+    <div class="login-container panel narrow">
         <div class="login-header">
             <h1>🔐 Gestor de Incidencias</h1>
             <p class="subheader">Inicia sesión para continuar</p>
