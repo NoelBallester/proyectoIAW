@@ -57,7 +57,7 @@ $totalPages = max(1, ceil($total / $perPage));
             <a href="preferencias.php">⚙️ Preferencias</a>
         </div>
     </div>
-    <div class="content">
+    <div class="content wide">
         <form method="GET" class="search-box" style="display:flex; gap:10px; flex-wrap:wrap;">
             <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Buscar por título o descripción">
             <button type="submit" class="btn-primary" style="flex:0 0 auto;">🔍 Buscar</button>

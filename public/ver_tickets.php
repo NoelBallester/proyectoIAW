@@ -50,7 +50,7 @@ $updated = $ticket['updated_at'] ?? null;
             <a href="index.php">🏠 Inicio</a>
         </div>
     </div>
-    <div class="content">
+    <div class="content wide">
         <div class="panel" style="padding:25px; box-shadow:none; background:var(--color-surface);">
             <p><strong>Título:</strong> <?= htmlspecialchars($ticket['titulo']) ?></p>
             <p><strong>Descripción:</strong><br><?= nl2br(htmlspecialchars($ticket['descripcion'])) ?></p>

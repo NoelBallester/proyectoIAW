@@ -41,7 +41,7 @@ $temaActual = $_COOKIE['tema'] ?? 'claro';
             <a href="editar_ticket.php">➕ Nueva</a>
         </div>
     </div>
-    <div class="content">
+    <div class="content wide">
         <form method="POST" class="form-wrapper" style="background:var(--color-surface); padding:30px; border-radius:var(--radius-lg);">
             <?= csrf_field() ?>
             <div class="form-group">

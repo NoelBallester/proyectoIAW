@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <div class="content form-wrapper">
+    <div class="content wide form-wrapper">
             <?php if ($errores): ?>
                 <div class="error-box"><strong>⚠️ Errores:</strong>
                     <?php foreach ($errores as $e): ?><p>• <?= htmlspecialchars($e) ?></p><?php endforeach; ?>
