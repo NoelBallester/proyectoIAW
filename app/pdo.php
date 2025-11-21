@@ -2,12 +2,14 @@
 // app/pdo.php
 
 // Configuración de la base de datos
-$host = '%';
+// Nota: '%' no es un host válido. Usa '127.0.0.1' o 'localhost' si MySQL está en la misma máquina.
+$host = '127.0.0.1';
+$port = 3306; // Cambia si usas otro puerto
 $db   = 'inventario_iaw';
 $user = 'NoelYAngela';
 $pass = 'IAWAN';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Para manejar errores como excepciones 
