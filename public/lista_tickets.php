@@ -12,14 +12,22 @@ $pdo = getPDO();
 // Parámetros
 $search = trim($_GET['q'] ?? '');
 $page = max(1, intval($_GET['page'] ?? 1));
-$perPage = 10;
+// Selector de tamaño de página (permitidos)
+$allowedPerPage = [5,10,25,50];
+$perPage = intval($_GET['per_page'] ?? 10);
+if (!in_array($perPage, $allowedPerPage, true)) { $perPage = 10; }
+$showDeleted = isset($_GET['show_deleted']) && $_GET['show_deleted'] === '1';
 $offset = ($page - 1) * $perPage;
 
 // Listado de incidencias (tabla tickets)
-$sql = "SELECT id, titulo, descripcion, prioridad, estado, created_at FROM tickets WHERE deleted_at IS NULL";
+$sql = "SELECT id, titulo, descripcion, prioridad, estado, created_at, deleted_at FROM tickets";
+$where = [];
+if (!$showDeleted) { $where[] = "deleted_at IS NULL"; }
+if ($search) { $where[] = "(titulo LIKE ? OR descripcion LIKE ?)"; }
+if ($where) { $sql .= " WHERE " . implode(' AND ', $where); }
+// Parámetros
 $params = [];
 if ($search) {
-    $sql .= " AND (titulo LIKE ? OR descripcion LIKE ?)";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
@@ -30,10 +38,12 @@ $stmt->execute($params);
 $tickets = $stmt->fetchAll();
 
 // Conteo total para paginación
-$countSql = "SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL";
-if ($search) {
-    $countSql .= " AND (titulo LIKE ? OR descripcion LIKE ?)";
-}
+// Conteo total para paginación (aplica mismos filtros)
+$countSql = "SELECT COUNT(*) FROM tickets";
+$countWhere = [];
+if (!$showDeleted) { $countWhere[] = "deleted_at IS NULL"; }
+if ($search) { $countWhere[] = "(titulo LIKE ? OR descripcion LIKE ?)"; }
+if ($countWhere) { $countSql .= " WHERE " . implode(' AND ', $countWhere); }
 $countStmt = $pdo->prepare($countSql);
 $countStmt->execute($params);
 $total = (int)$countStmt->fetchColumn();
@@ -58,8 +68,16 @@ $totalPages = max(1, ceil($total / $perPage));
         </div>
     </div>
     <div class="content wide">
-        <form method="GET" class="search-box" style="display:flex; gap:10px; flex-wrap:wrap;">
+        <form method="GET" class="search-box" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
             <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Buscar por título o descripción">
+            <select name="per_page" style="flex:0 0 auto;">
+                <?php foreach ($allowedPerPage as $opt): ?>
+                    <option value="<?= $opt ?>" <?= $opt === $perPage ? 'selected' : '' ?>><?= $opt ?>/página</option>
+                <?php endforeach; ?>
+            </select>
+            <label style="display:flex; gap:4px; align-items:center; font-size:.85rem;">
+                <input type="checkbox" name="show_deleted" value="1" <?= $showDeleted ? 'checked' : '' ?>> Mostrar borrados
+            </label>
             <button type="submit" class="btn-primary" style="flex:0 0 auto;">🔍 Buscar</button>
             <a href="editar_ticket.php" class="btn-secondary" style="flex:0 0 auto;">➕ Crear</a>
         </form>
@@ -84,7 +102,12 @@ $totalPages = max(1, ceil($total / $perPage));
                         <td><?= htmlspecialchars($t['id']) ?></td>
                         <td><?= htmlspecialchars($t['titulo']) ?></td>
                         <td><?= htmlspecialchars(mb_strimwidth($t['descripcion'],0,80,'…')) ?></td>
-                        <td class="status"><?= htmlspecialchars($t['estado']) ?></td>
+                        <td class="status">
+                            <?= htmlspecialchars($t['estado']) ?>
+                            <?php if ($t['deleted_at']): ?>
+                                <span style="display:inline-block; padding:2px 6px; border-radius:8px; background:#cc3333; color:#fff; font-size:.65rem; margin-left:4px;">BORRADO</span>
+                            <?php endif; ?>
+                        </td>
                         <td><?= htmlspecialchars($t['created_at']) ?></td>
                         <td class="actions-inline">
                             <a href="ver_tickets.php?id=<?= urlencode($t['id']) ?>">Ver</a> |
@@ -100,16 +123,59 @@ $totalPages = max(1, ceil($total / $perPage));
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
-            <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                <?php if ($p == $page): ?>
-                    <strong><?= $p ?></strong>
-                <?php else: ?>
-                    <a href="?q=<?= urlencode($search) ?>&page=<?= $p ?>"><?= $p ?></a>
-                <?php endif; ?>
-            <?php endfor; ?>
+        <?php
+        // Helper para construir URL manteniendo filtros
+        function build_list_url($pageNumber) {
+            $params = [
+                'q' => $_GET['q'] ?? '',
+                'page' => $pageNumber,
+                'per_page' => $_GET['per_page'] ?? '',
+            ];
+            if (isset($_GET['show_deleted'])) { $params['show_deleted'] = '1'; }
+            return '?' . http_build_query($params);
+        }
+        ?>
+        <div class="pagination" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+            <?php if ($page > 1): ?>
+                <a href="<?= build_list_url(1) ?>">⏮️</a>
+                <a href="<?= build_list_url($page - 1) ?>">◀️</a>
+            <?php endif; ?>
+            <?php
+            // Mostrar rango compacto (máx 9 páginas visibles)
+            $window = 4; // páginas a cada lado
+            $start = max(1, $page - $window);
+            $end = min($totalPages, $page + $window);
+            if ($start > 1) {
+                echo '<a href="' . build_list_url(1) . '">1</a>';
+                if ($start > 2) { echo '<span style="opacity:.6;">…</span>'; }
+            }
+            for ($p = $start; $p <= $end; $p++) {
+                if ($p == $page) {
+                    echo '<strong>' . $p . '</strong>';
+                } else {
+                    echo '<a href="' . build_list_url($p) . '">' . $p . '</a>';
+                }
+            }
+            if ($end < $totalPages) {
+                if ($end < $totalPages - 1) { echo '<span style="opacity:.6;">…</span>'; }
+                echo '<a href="' . build_list_url($totalPages) . '">' . $totalPages . '</a>';
+            }
+            ?>
+            <?php if ($page < $totalPages): ?>
+                <a href="<?= build_list_url($page + 1) ?>">▶️</a>
+                <a href="<?= build_list_url($totalPages) ?>">⏭️</a>
+            <?php endif; ?>
         </div>
-        <footer>Mostrando página <?= $page ?> de <?= $totalPages ?> • Total: <?= $total ?> incidencias</footer>
+        <footer>
+            Mostrando página <?= $page ?> de <?= $totalPages ?> • Total: <?= $total ?> incidencias
+            • Tamaño página: <?= $perPage ?>
+            <?php if ($total <= 1): ?>
+                <div style="margin-top:6px; font-size:.8rem; opacity:.75;">(Crea más incidencias para ver la paginación en acción)</div>
+            <?php endif; ?>
+            <?php if ($showDeleted): ?>
+                <div style="margin-top:4px; font-size:.7rem; color:#c33;">Mostrando también incidencias borradas (soft delete).</div>
+            <?php endif; ?>
+        </footer>
     </div>
 </div>
 </body>
