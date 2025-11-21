@@ -1,7 +1,7 @@
 <?php
-require_once 'auth.php';
+require_once __DIR__ . '/../app/auth.php';
 require_login();
-require_once 'pdo.php';
+require_once __DIR__ . '/../app/pdo.php';
 
 $pdo = getPDO();  
 $errores = [];
@@ -25,7 +25,7 @@ if ($id && $_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Si se envia el formulario:
-if ($_sERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = trim($_POST['titulo'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
     $prioridad = $_POST['prioridad'] ?? 'media';
@@ -65,9 +65,11 @@ if ($_sERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <h1><?= $id ? 'Editar Ticket' : 'Crear Ticket' ?> Incidencias</h1>
-<?php foreach ($errores as $e): ?>
-    <p style="color:red"<?= htmlspecialchars($e) ?></p>
-<?php endforeach; ?>
+<?php if ($errores): ?>
+    <?php foreach ($errores as $e): ?>
+        <p style="color:red"><?= htmlspecialchars($e) ?></p>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <form method="POST">
     <label>Título: <input type="text" name="titulo" value="<?= htmlspecialchars($titulo) ?>"></label><br>

@@ -1,6 +1,7 @@
 <?php
-require_once 'pdo.php';
-require_once 'auth.php';
+// Rutas corregidas hacia la carpeta app
+require_once __DIR__ . '/../app/pdo.php';
+require_once __DIR__ . '/../app/auth.php';
 
 $error = null;
 

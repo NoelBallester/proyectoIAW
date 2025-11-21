@@ -1,7 +1,8 @@
 <?php
-require_once 'auth.php';
+// Cargar dependencias con rutas absolutas relativas
+require_once __DIR__ . '/../app/auth.php';
 require_login();
-require_once 'pdo.php';
+require_once __DIR__ . '/../app/pdo.php';
 
 $pdo = getPDO();
 // Parámetros
@@ -14,7 +15,7 @@ $offset = ($page - 1) * $perPage;
 $sql = "SELECT * FROM tickets WHERE deleted_at IS NULL";
 $params = [];
 if ($search) {
-    $sql .= "AND (title LIKE ? OR description LIKE ?)";
+    $sql .= " AND (titulo LIKE ? OR descripcion LIKE ?)";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
@@ -27,7 +28,7 @@ $tickets = $stmt->fetchAll();
 // Total para paginacion
 $countSql = "SELECT COUNT(*) FROM tickets WHERE deleted_at IS NULL";
 if ($search) {
-    $countSql .= " AND (title LIKE ? OR description LIKE ?)";
+    $countSql .= " AND (titulo LIKE ? OR descripcion LIKE ?)";
 }
 $countStmt = $pdo->prepare($countSql);
 $countStmt->execute($params);
@@ -68,9 +69,10 @@ $totalPages = ceil($total / $perPage);
                 <td><?= htmlspecialchars($t['descripcion']) ?></td>
                 <td><?= htmlspecialchars($t['estado']) ?></td>
                 <td><?= htmlspecialchars($t['creado']) ?></td>
-                      <a href="ver_ticket.php?id=<?= $t['id'] ?>">Ver</a>
-                      <a href="editar_ticket.php?id=<?= $t['id'] ?>">Editar</a>
-                      <a href="borrar_ticket.php?id=<?= $t['id'] ?>" onclick="return confirm('¿Estás seguro de que quieres borrar este ticket?')">Borrar</a>
+                <td>
+                    <a href="ver_tickets.php?id=<?= urlencode($t['id']) ?>">Ver</a>
+                    <a href="editar_ticket.php?id=<?= urlencode($t['id']) ?>">Editar</a>
+                    <a href="borrar_ticket.php?id=<?= urlencode($t['id']) ?>" onclick="return confirm('¿Estás seguro de que quieres borrar este ticket?')">Borrar</a>
                 </td>
             </tr>
             <?php endforeach; ?>

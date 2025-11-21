@@ -1,5 +1,6 @@
 <?php
-require_once 'auth.php';
+// Carga de utilidades de autenticación (ruta corregida)
+require_once __DIR__ . '/../app/auth.php';
 require_login();
 ?>
 <!DOCTYPE html>
