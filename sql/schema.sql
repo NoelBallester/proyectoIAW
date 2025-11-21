@@ -76,10 +76,3 @@ CREATE USER IF NOT EXISTS 'NoelYAngela'@'%' IDENTIFIED BY 'IAWAN';
 GRANT ALL PRIVILEGES ON inventario_iaw.* TO 'NoelYAngela'@'%';
 
 FLUSH PRIVILEGES;
--- 4. INSERTAR USUARIO DE PRUEBA PARA LA APLICACIÓN WEB
--- ---------------------------------------------------------
--- Usuario: admin
--- Password: admin123
--- Hash generado con password_hash('admin123', PASSWORD_DEFAULT) y verificado
-INSERT INTO usuarios (username, password) VALUES 
-('admin', '$2y$10$/tcIacKZhwqpQyvtHMmVsOQWwK4yrk9JtDs4GFFWdVN7gEErfYsda');
