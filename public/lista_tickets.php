@@ -22,7 +22,7 @@ if ($search) {
     $params[] = "%$search%";
 }
 
-$sql .= " ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
+$sql .= " ORDER BY creado DESC LIMIT $perPage OFFSET $offset";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $tickets = $stmt->fetchAll();
