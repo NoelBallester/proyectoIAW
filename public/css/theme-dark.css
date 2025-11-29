@@ -1,17 +1,54 @@
-/* theme-dark.css */
+/* =================================================================
+   PROYECTO: Gestión de Incidencias
+   FICHERO: theme-dark.css
+   DESCRIPCIÓN: Variables de colores para el Tema Oscuro (Dark Mode).
+   ALUMNOS: Noel Ballester Baños y Ángela Navarro Nieto 2º ASIR
+=================================================================
+*/
+
 :root, .theme-dark {
-  --gradient-start:#0f172a; --gradient-end:#1e293b;
-  --bg-main: linear-gradient(135deg,#0f172a 0%, #1e293b 80%, #0f172a 100%);
-  --color-text:#e2e8f0; --color-surface:#162032;
-  --color-on-primary:#ffffff;
-  --accent:#3b82f6; --accent-focus-shadow:rgba(59,130,246,0.35);
-  --pill-bg:rgba(255,255,255,0.08);
-  --btn-shadow:rgba(59,130,246,0.35); --btn-shadow-hover:rgba(59,130,246,0.55);
-  --border-color:#243042;
-  --secondary-bg:#243042; --secondary-bg-hover:#324459; --secondary-text:#e2e8f0;
-  --table-head-bg:#243042; --row-hover-bg:#1b2533;
-  --input-bg:#0f172a;
-  --error-start:#be123c; --error-end:#9f1239;
-  --danger-bg:#dc2626; --danger-bg-hover:#b91c1c;
+    /* 1. FONDOS Y GRADIENTES PRINCIPALES */
+    --gradient-start: #0f172a;
+    --gradient-end: #1e293b;
+    --bg-main: linear-gradient(135deg, #0f172a 0%, #1e293b 80%, #0f172a 100%);
+
+    /* 2. COLORES BASE (TEXTO Y SUPERFICIES) */
+    --color-text: #e2e8f0;        /* Texto blanco grisáceo (fácil de leer) */
+    --color-surface: #162032;     /* Fondo de tarjetas (Azul muy oscuro) */
+    --color-on-primary: #ffffff;  /* Texto sobre acentos */
+
+    /* 3. ACENTOS Y FOCOS */
+    --accent: #3b82f6;            /* Azul brillante para destacar */
+    --accent-focus-shadow: rgba(59, 130, 246, 0.35);
+    --pill-bg: rgba(255, 255, 255, 0.08); /* Fondo muy sutil para badges */
+
+    /* 4. BOTONES Y SOMBRAS */
+    --btn-shadow: rgba(59, 130, 246, 0.35);
+    --btn-shadow-hover: rgba(59, 130, 246, 0.55);
+
+    /* 5. BORDES Y SEPARADORES */
+    --border-color: #243042;      /* Gris azulado oscuro */
+
+    /* 6. ELEMENTOS SECUNDARIOS (Botones "volver", paginación) */
+    --secondary-bg: #243042;
+    --secondary-bg-hover: #324459;
+    --secondary-text: #e2e8f0;
+
+    /* 7. TABLAS */
+    --table-head-bg: #243042;
+    --row-hover-bg: #1b2533;      /* Un poco más claro que el fondo al pasar ratón */
+
+    /* 8. FORMULARIOS */
+    --input-bg: #0f172a;          /* Fondo de inputs casi negro */
+
+    /* 9. ESTADOS DE ERROR / PELIGRO */
+    --error-start: #be123c;
+    --error-end: #9f1239;
+    --danger-bg: #dc2626;         /* Rojo intenso */
+    --danger-bg-hover: #b91c1c;
 }
-body.theme-dark { color:var(--color-text); }
+
+/* Aplicar color de texto claro al body cuando este tema está activo */
+body.theme-dark {
+    color: var(--color-text);
+}

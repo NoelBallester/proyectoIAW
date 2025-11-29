@@ -1,32 +1,47 @@
 <?php
-// app/pdo.php
+// =================================================================
+// PROYECTO: Gestión de Incidencias
+// FICHERO: app/pdo.php
+// DESCRIPCIÓN: Conexión centralizada a la base de datos MySQL.
+// ALUMNOS: Noel Ballester Baños y Ángela Navarro Nieto 2º ASIR
+// =================================================================
 
-// Configuración de la base de datos
-// Nota: '%' no es un host válido. Usa '127.0.0.1' o 'localhost' si MySQL está en la misma máquina.
-$host = '127.0.0.1';
-$port = 3306; // Cambia si usas otro puerto
-$db   = 'inventario_iaw';
-$user = 'NoelYAngela';
-$pass = 'IAWAN';
+// 1. CONFIGURACIÓN DE LA BASE DE DATOS
+$host = '127.0.0.1';      // IP del servidor de la BD (localhost)
+$port = '3306';           // Puerto estándar de MySQL
+$db   = 'inventario_iaw'; // Nombre de la base de datos
+$user = 'NoelYAngela';    // Usuario creado en MySQL
+$pass = 'IAWAN';          // Contraseña del usuario
+$charset = 'utf8mb4';     // Juego de caracteres (soporta tildes y eñes)
 
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
+// DSN (Data Source Name): La cadena de conexión que necesita PDO
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
+// 2. OPCIONES DE PDO
 $options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Para manejar errores como excepciones 
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // Para recibir arrays asociativos
-    PDO::ATTR_EMULATE_PREPARES   => false,                  // Seguridad real en consultas preparadas
+    // Si hay un error SQL, lanza una "Excepción" para que PHP pare y avise
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    
+    // Los datos vienen como un Array Asociativo ['columna' => 'valor']
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    
+    // DESACTIVAMOS la emulación. Seguridad critica contra Inyección SQL.
+    PDO::ATTR_EMULATE_PREPARES   => false,
 ];
 
+// 3. INTENTO DE CONEXIÓN
 try {
+    // Creamos la nueva instancia de PDO (abrimos la conexión)
     $pdo = new PDO($dsn, $user, $pass, $options);
+    
 } catch (\PDOException $e) {
-    // En producción no mostraríamos el error real, pero para desarrollo ayuda
-    die("Error de conexión a la base de datos: " . $e->getMessage());
+    // Si falla, mostramos mensaje de error sin adornos
+    die("Error Critico: No se pudo conectar a la Base de Datos. Detalle: " . $e->getMessage());
 }
 
 /**
- * Devuelve la instancia PDO creada arriba.
- * Función auxiliar para usar en otras partes del proyecto.
+ * Función auxiliar para obtener la conexión desde otros archivos.
+ * Devuelve el objeto $pdo activo.
  */
 function getPDO() {
     global $pdo;

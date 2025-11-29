@@ -1,54 +1,57 @@
 <?php
+// =================================================================
+// PROYECTO: Gestión de Incidencias
+// FICHERO: borrar_ticket.php
+// DESCRIPCIÓN: Marca un ticket como eliminado (Soft Delete).
+// ALUMNOS: Noel Ballester Baños y Ángela Navarro Nieto 2º ASIR
+// =================================================================
+
 require_once __DIR__ . '/../app/auth.php';
 require_login();
 require_once __DIR__ . '/../app/pdo.php';
-require_once __DIR__ . '/../app/csrf.php';
 
+// Iniciamos conexión
 $pdo = getPDO();
 
-// Solo aceptar POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo "Método no permitido.";
-    exit;
-}
+// 1. RECOGIDA Y VALIDACIÓN DEL ID
+// Usamos filter_input para mayor seguridad en parámetros GET
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-// Comprobar CSRF
-check_csrf();
-
-$id = $_POST['id'] ?? null;
-if (!$id || !is_numeric($id)) {
-    http_response_code(400);
-    echo "ID de ticket inválido.";
-    exit;
+if (!$id) {
+    die("Error: ID de ticket no especificado o inválido.");
 }
 
 try {
+    // 2. INICIO DE TRANSACCIÓN
+    // Asegura que las operaciones sean atómicas (todo o nada)
     $pdo->beginTransaction();
 
-    // Verificar que el ticket existe
-    $stmt = $pdo->prepare("SELECT * FROM tickets WHERE id = ? AND deleted_at IS NULL");
-    $stmt->execute([$id]);
-    $ticket = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$ticket) {
-        throw new Exception("Ticket no encontrado.");
+    // 3. VERIFICAR EXISTENCIA
+    // Solo borramos si existe y no está borrado ya
+    $stmt = $pdo->prepare("SELECT id FROM tickets WHERE id = :id AND deleted_at IS NULL");
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    if (!$stmt->fetch()) {
+        throw new Exception("El ticket no existe o ya ha sido eliminado.");
     }
 
-    // Marcar el ticket como borrado (soft delete)
-    $stmt = $pdo->prepare("UPDATE tickets SET deleted_at = NOW() WHERE id = ?");
-    $stmt->execute([$id]);
+    // 4. SOFT DELETE
+    // Actualizamos fecha de borrado en vez de eliminar el registro físico
+    $stmt = $pdo->prepare("UPDATE tickets SET deleted_at = NOW() WHERE id = :id");
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
 
-    // Auditoria
-    $stmt = $pdo->prepare("INSERT INTO ticket_audit (ticket_id, action) VALUES (?, 'borrado')");
-    $stmt->execute([$id]);
-
+    // 5. CONFIRMAR CAMBIOS
     $pdo->commit();
+
+    // Redirección a la lista
     header('Location: lista_tickets.php');
     exit;
 
 } catch (Exception $e) {
+    // Si falla algo, deshacemos cambios
     $pdo->rollBack();
-    http_response_code(500);
-    echo "Error al borrar el ticket: " . $e->getMessage();
+    die("Error al borrar el ticket: " . $e->getMessage());
 }
 ?>
