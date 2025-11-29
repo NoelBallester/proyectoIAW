@@ -12,15 +12,11 @@ require_once __DIR__ . '/../app/pdo.php';
 require_once __DIR__ . '/../app/theme.php';
 
 // 1. OBTENER DATOS DEL USUARIO
-// Aunque tenemos el ID en $_SESSION, es buena práctica recuperar
-// el nombre actualizado desde la BD por si ha cambiado.
 $pdo = getPDO();
 $stmt = $pdo->prepare("SELECT username FROM usuarios WHERE id = :id");
 $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
 $stmt->execute();
 $user = $stmt->fetch();
-
-// Si no se encuentra (raro), usamos 'Usuario' por defecto
 $username = $user['username'] ?? 'Usuario';
 ?>
 <!DOCTYPE html>
@@ -43,15 +39,16 @@ $username = $user['username'] ?? 'Usuario';
             <div class="nav">
                 <a href="lista_tickets.php">Incidencias</a>
                 <a href="editar_ticket.php">Nueva</a>
+                <a href="crear_usuario.php">Usuarios</a>
                 <a href="preferencias.php">Preferencias</a>
             </div>
         </div>
 
         <div class="content">
             <div class="grid cards">
-                
                 <a href="lista_tickets.php" class="card primary">
-                    <span class="icon">&equiv;</span> <div class="title">Listado</div>
+                    <span class="icon">&equiv;</span>
+                    <div class="title">Listado</div>
                     <div class="desc">Ver y gestionar incidencias</div>
                 </a>
 
@@ -61,6 +58,12 @@ $username = $user['username'] ?? 'Usuario';
                     <div class="desc">Registrar nueva tarea</div>
                 </a>
 
+                <a href="crear_usuario.php" class="card">
+                    <span class="icon">@</span>
+                    <div class="title">Usuarios</div>
+                    <div class="desc">Registrar nuevos administradores</div>
+                </a>
+                
                 <a href="preferencias.php" class="card">
                     <span class="icon">~</span>
                     <div class="title">Preferencias</div>

@@ -2,7 +2,7 @@
 // =================================================================
 // PROYECTO: Gestión de Incidencias
 // FICHERO: lista_tickets.php
-// DESCRIPCIÓN: Listado principal con búsqueda, filtros y paginación.
+// DESCRIPCIÓN: Listado principal con búsqueda, filtros, paginación y acciones.
 // ALUMNOS: Noel Ballester Baños y Ángela Navarro Nieto 2º ASIR
 // =================================================================
 
@@ -21,7 +21,6 @@ $offset = ($page - 1) * $perPage;
 $showDeleted = isset($_GET['show_deleted']) && $_GET['show_deleted'] === '1';
 
 // --- 2. DETECCIÓN DE COLUMNAS ---
-// Verificamos columnas existentes para evitar errores si la BD cambia
 $columns = $pdo->query("SHOW COLUMNS FROM tickets")->fetchAll(PDO::FETCH_COLUMN, 0);
 $c = [
     'titulo'  => in_array('titulo', $columns) ? 'titulo' : 'title',
@@ -46,7 +45,7 @@ if (!$showDeleted && $c['deleted']) {
     $where[] = "{$c['deleted']} IS NULL";
 }
 
-// Búsqueda Segura (Parámetros separados :q1, :q2 para compatibilidad total)
+// Búsqueda
 if ($search) {
     $where[] = "({$c['titulo']} LIKE :q1 OR {$c['desc']} LIKE :q2)";
     $params[':q1'] = "%$search%";
@@ -58,7 +57,7 @@ if ($where) $sql .= " WHERE " . implode(' AND ', $where);
 // Orden y Paginación
 $sql .= " ORDER BY " . ($c['updated'] ?: $c['created']) . " DESC LIMIT :limit OFFSET :offset";
 
-// --- 4. EJECUCIÓN SEGURA (PDO) ---
+// --- 4. EJECUCIÓN SEGURA ---
 $stmt = $pdo->prepare($sql);
 foreach ($params as $k => $v) $stmt->bindValue($k, $v);
 $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
@@ -73,7 +72,6 @@ foreach ($params as $k => $v) $stmt->bindValue($k, $v);
 $stmt->execute();
 $totalPages = max(1, ceil($stmt->fetchColumn() / $perPage));
 
-// Helper para URLs
 function url($p) {
     return '?' . http_build_query(array_merge($_GET, ['page' => max(1, (int)$p)]));
 }
@@ -116,7 +114,7 @@ function url($p) {
                         <th>Descripción</th>
                         <th width="120">Estado</th>
                         <th width="160">Fecha</th>
-                        <th width="100">Acciones</th>
+                        <th width="140">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,16 +122,15 @@ function url($p) {
                         <tr><td colspan="5" style="text-align:center; padding:20px;">Sin resultados.</td></tr>
                     <?php else: ?>
                         <?php foreach ($tickets as $t): 
-                            // PREVENCIÓN DE ERRORES (Anti-Crash)
                             $id = (string)($t['id'] ?? '');
                             $titulo = (string)($t['titulo'] ?? '(Sin título)');
                             $descRaw = (string)($t['descripcion'] ?? '');
                             $estado = (string)($t['estado'] ?? 'desconocido');
                             $fecha = (string)($t['fecha'] ?? '');
-                            // Cortar texto de forma segura
                             $descCorta = strlen($descRaw) > 80 ? substr($descRaw, 0, 80) . '...' : $descRaw;
+                            $isDeleted = !empty($t['deleted_at']);
                         ?>
-                        <tr class="<?= !empty($t['deleted_at']) ? 'deleted-row' : '' ?>">
+                        <tr class="<?= $isDeleted ? 'deleted-row' : '' ?>">
                             <td><?= htmlspecialchars($id) ?></td>
                             <td>
                                 <strong><?= htmlspecialchars($titulo) ?></strong><br>
@@ -146,7 +143,16 @@ function url($p) {
                             </td>
                             <td style="font-size:0.9em;"><?= htmlspecialchars($fecha) ?></td>
                             <td>
-                                <a href="editar_ticket.php?id=<?= $id ?>" class="btn-secondary" style="padding:4px 10px; font-size:0.8em;">Editar</a>
+                                <a href="editar_ticket.php?id=<?= $id ?>" class="btn-secondary" style="padding:4px 8px; font-size:0.8em;">Editar</a>
+                                
+                                <?php if (!$isDeleted): ?>
+                                <a href="borrar_ticket.php?id=<?= $id ?>" 
+                                   class="btn-secondary" 
+                                   style="padding:4px 8px; font-size:0.8em; background:#fee; color:#c00; border:1px solid #fcc;"
+                                   onclick="return confirm('¿Seguro que quieres borrar la incidencia #<?= $id ?>?');">
+                                   Borrar
+                                </a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
