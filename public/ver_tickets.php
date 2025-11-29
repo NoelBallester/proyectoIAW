@@ -82,12 +82,12 @@ $nextPos = $hasNext ? $position + 1 : null;
 <body class="<?= htmlspecialchars(body_theme_class()) ?>">
 <div class="container">
     <div class="header">
-        <h1>🗂️ Incidencia #<?= htmlspecialchars($ticket['id']) ?></h1>
+        <h1> Incidencia #<?= htmlspecialchars($ticket['id']) ?></h1>
         <div class="nav">
-            <a href="lista_tickets.php">📋 Listado</a>
-            <a href="editar_ticket.php?id=<?= urlencode($ticket['id']) ?>">✏️ Editar</a>
-            <a href="preferencias.php">⚙️ Preferencias</a>
-            <a href="index.php">🏠 Inicio</a>
+            <a href="lista_tickets.php"> Listado</a>
+            <a href="editar_ticket.php?id=<?= urlencode($ticket['id']) ?>"> Editar</a>
+            <a href="preferencias.php"> Preferencias</a>
+            <a href="index.php"> Inicio</a>
         </div>
     </div>
     <div class="content wide">
@@ -98,29 +98,29 @@ $nextPos = $hasNext ? $position + 1 : null;
             <p><strong>Creado:</strong> <?= htmlspecialchars($created) ?><?php if (!empty($updated)): ?> • <strong>Actualizado:</strong> <?= htmlspecialchars($updated) ?><?php endif; ?></p>
         </div>
         <div style="margin-top:25px;" class="actions-inline">
-            <a href="editar_ticket.php?id=<?= urlencode($ticket['id']) ?>" class="btn-secondary">✏️ Editar</a>
+            <a href="editar_ticket.php?id=<?= urlencode($ticket['id']) ?>" class="btn-secondary"> Editar</a>
             <form action="borrar_ticket.php" method="post" onsubmit="return confirm('¿Borrar definitivamente?')" style="display:inline-block; margin:0 10px;">
                 <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= htmlspecialchars($ticket['id']) ?>">
-                <button type="submit">🗑️ Borrar</button>
+                <button type="submit"> Borrar</button>
             </form>
             <a href="lista_tickets.php" class="btn-secondary">← Volver</a>
         </div>
         <div class="pagination" style="margin-top:35px;">
             <?php if ($hasPrev): ?>
-                <a href="ver_tickets.php?pos=<?= $firstPos ?>" title="Primer">⏮️</a>
-                <a href="ver_tickets.php?pos=<?= $prevPos ?>" title="Anterior">◀️</a>
+                <a href="ver_tickets.php?pos=<?= $firstPos ?>" title="Primer"></a>
+                <a href="ver_tickets.php?pos=<?= $prevPos ?>" title="Anterior"></a>
             <?php else: ?>
-                <strong style="opacity:.4">⏮️</strong>
-                <strong style="opacity:.4">◀️</strong>
+                <strong style="opacity:.4"></strong>
+                <strong style="opacity:.4"></strong>
             <?php endif; ?>
             <strong><?= $position ?> / <?= $totalTickets ?></strong>
             <?php if ($hasNext): ?>
-                <a href="ver_tickets.php?pos=<?= $nextPos ?>" title="Siguiente">▶️</a>
-                <a href="ver_tickets.php?pos=<?= $lastPos ?>" title="Último">⏭️</a>
+                <a href="ver_tickets.php?pos=<?= $nextPos ?>" title="Siguiente"></a>
+                <a href="ver_tickets.php?pos=<?= $lastPos ?>" title="Último"></a>
             <?php else: ?>
-                <strong style="opacity:.4">▶️</strong>
-                <strong style="opacity:.4">⏭️</strong>
+                <strong style="opacity:.4"></strong>
+                <strong style="opacity:.4"></strong>
             <?php endif; ?>
         </div>
     </div>
