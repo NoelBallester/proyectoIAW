@@ -33,10 +33,10 @@ try {
 <body class="<?= htmlspecialchars(body_theme_class()) ?>">
 <div class="container">
   <div class="header">
-    <h1>🧪 Debug Tickets</h1>
+    <h1> Debug Tickets</h1>
     <div class="nav">
-      <a href="lista_tickets.php">📋 Listado</a>
-      <a href="index.php">🏠 Inicio</a>
+      <a href="lista_tickets.php"> Listado</a>
+      <a href="index.php"> Inicio</a>
     </div>
   </div>
   <div class="content wide">
@@ -47,7 +47,7 @@ try {
       <p><strong>Activos (deleted_at IS NULL):</strong> <?= $activos ?></p>
       <p><strong>Borrados (deleted_at IS NOT NULL):</strong> <?= $borrados ?></p>
       <?php if ($tieneDuplicado): ?>
-        <div class="error-box" style="background:#ffd9a6; color:#663a00;">⚠️ Se detectan columnas de una segunda definición de la tabla (title/eliminado). Revisa tu schema para no mezclar estructuras.</div>
+        <div class="error-box" style="background:#ffd9a6; color:#663a00;"> Se detectan columnas de una segunda definición de la tabla (title/eliminado). Revisa tu schema para no mezclar estructuras.</div>
       <?php endif; ?>
       <h2>Muestra últimas 10</h2>
       <table class="table">
