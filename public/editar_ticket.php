@@ -74,53 +74,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="<?= htmlspecialchars(body_theme_class()) ?>">
     <div class="container">
         <div class="header">
-            <h1><?= $id ? '✏️ Editar' : '➕ Crear' ?> Incidencia</h1>
+            <h1><?= $id ? ' Editar' : ' Crear' ?> Incidencia</h1>
             <div class="nav">
-                <a href="index.php">🏠 Inicio</a>
-                <a href="lista_tickets.php">📋 Listado</a>
-                <a href="preferencias.php">⚙️ Preferencias</a>
+                <a href="index.php"> Inicio</a>
+                <a href="lista_tickets.php"> Listado</a>
+                <a href="preferencias.php"> Preferencias</a>
             </div>
         </div>
 
     <div class="content wide form-wrapper">
             <?php if ($errores): ?>
-                <div class="error-box"><strong>⚠️ Errores:</strong>
+                <div class="error-box"><strong> Errores:</strong>
                     <?php foreach ($errores as $e): ?><p>• <?= htmlspecialchars($e) ?></p><?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
             <form method="POST">
                 <div class="form-group">
-                    <label for="titulo">📝 Título *</label>
+                    <label for="titulo"> Título *</label>
                     <input type="text" id="titulo" name="titulo" placeholder="Ingresa el título" value="<?= htmlspecialchars($titulo) ?>" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="descripcion">📄 Descripción *</label>
+                    <label for="descripcion"> Descripción *</label>
                     <textarea id="descripcion" name="descripcion" placeholder="Describe la incidencia" required><?= htmlspecialchars($descripcion) ?></textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="prioridad">🔥 Prioridad</label>
+                        <label for="prioridad"> Prioridad</label>
                         <select id="prioridad" name="prioridad">
-                            <option value="baja" <?= $prioridad === 'baja' ? 'selected' : '' ?>>🟢 Baja</option>
-                            <option value="media" <?= $prioridad === 'media' ? 'selected' : '' ?>>🟡 Media</option>
-                            <option value="alta" <?= $prioridad === 'alta' ? 'selected' : '' ?>>🔴 Alta</option>
+                            <option value="baja" <?= $prioridad === 'baja' ? 'selected' : '' ?>> Baja</option>
+                            <option value="media" <?= $prioridad === 'media' ? 'selected' : '' ?>> Media</option>
+                            <option value="alta" <?= $prioridad === 'alta' ? 'selected' : '' ?>> Alta</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="estado">📊 Estado</label>
+                        <label for="estado"> Estado</label>
                         <select id="estado" name="estado">
-                            <option value="abierta" <?= $estado === 'abierta' ? 'selected' : '' ?>>🆕 Abierta</option>
-                            <option value="en progreso" <?= $estado === 'en progreso' ? 'selected' : '' ?>>⏳ En Progreso</option>
-                            <option value="cerrada" <?= $estado === 'cerrada' ? 'selected' : '' ?>>✅ Cerrada</option>
+                            <option value="abierta" <?= $estado === 'abierta' ? 'selected' : '' ?>> Abierta</option>
+                            <option value="en progreso" <?= $estado === 'en progreso' ? 'selected' : '' ?>> En Progreso</option>
+                            <option value="cerrada" <?= $estado === 'cerrada' ? 'selected' : '' ?>> Cerrada</option>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary" style="width:100%"><?= $id ? '💾 Actualizar Incidencia' : '✨ Crear Incidencia' ?></button>
+                <button type="submit" class="btn-primary" style="width:100%"><?= $id ? ' Actualizar Incidencia' : ' Crear Incidencia' ?></button>
             </form>
             <a href="lista_tickets.php" class="btn-secondary" style="margin-top:20px">← Volver al listado</a>
         </div>
