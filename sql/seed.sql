@@ -1,61 +1,77 @@
-use inventario_iaw;
--- INSERTAR USUARIO DE PRUEBA PARA LA APLICACIÓN WEB
--- ---------------------------------------------------------
--- Usuario: admin
--- Password: admin123
--- Hash generado con password_hash('admin123', PASSWORD_DEFAULT) y verificado
-INSERT INTO usuarios (username, password) VALUES 
-('admin', '$2y$10$/tcIacKZhwqpQyvtHMmVsOQWwK4yrk9JtDs4GFFWdVN7gEErfYsda');
+/* =================================================================
+   PROYECTO: Gestión de Incidencias
+   FICHERO: sql/seed.sql
+   DESCRIPCIÓN: Datos de prueba iniciales (Seed).
+   ALUMNOS: Noel Ballester Baños y Ángela Navarro Nieto 2º ASIR
+   ================================================================= */
 
--- 50 tickets de prueba
-INSERT INTO tickets (titulo, descripcion, prioridad, estado) VALUES
-('Ticket 1', 'Descripción de prueba 1', 'baja', 'abierta'),
-('Ticket 2', 'Descripción de prueba 2', 'media', 'abierta'),
-('Ticket 3', 'Descripción de prueba 3', 'alta', 'cerrada'),
-('Ticket 4', 'Descripción de prueba 4', 'baja', 'abierta'),
-('Ticket 5', 'Descripción de prueba 5', 'media', 'cerrada'),
-('Ticket 6', 'Descripción de prueba 6', 'alta', 'abierta'),
-('Ticket 7', 'Descripción de prueba 7', 'baja', 'abierta'),
-('Ticket 8', 'Descripción de prueba 8', 'media', 'abierta'),
-('Ticket 9', 'Descripción de prueba 9', 'alta', 'cerrada'),
-('Ticket 10', 'Descripción de prueba 10', 'baja', 'abierta'),
-('Ticket 11', 'Descripción de prueba 11', 'media', 'abierta'),
-('Ticket 12', 'Descripción de prueba 12', 'alta', 'cerrada'),
-('Ticket 13', 'Descripción de prueba 13', 'baja', 'abierta'),
-('Ticket 14', 'Descripción de prueba 14', 'media', 'cerrada'),
-('Ticket 15', 'Descripción de prueba 15', 'alta', 'abierta'),
-('Ticket 16', 'Descripción de prueba 16', 'baja', 'abierta'),
-('Ticket 17', 'Descripción de prueba 17', 'media', 'abierta'),
-('Ticket 18', 'Descripción de prueba 18', 'alta', 'cerrada'),
-('Ticket 19', 'Descripción de prueba 19', 'baja', 'abierta'),
-('Ticket 20', 'Descripción de prueba 20', 'media', 'cerrada'),
-('Ticket 21', 'Descripción de prueba 21', 'alta', 'abierta'),
-('Ticket 22', 'Descripción de prueba 22', 'baja', 'abierta'),
-('Ticket 23', 'Descripción de prueba 23', 'media', 'abierta'),
-('Ticket 24', 'Descripción de prueba 24', 'alta', 'cerrada'),
-('Ticket 25', 'Descripción de prueba 25', 'baja', 'abierta'),
-('Ticket 26', 'Descripción de prueba 26', 'media', 'cerrada'),
-('Ticket 27', 'Descripción de prueba 27', 'alta', 'abierta'),
-('Ticket 28', 'Descripción de prueba 28', 'baja', 'abierta'),
-('Ticket 29', 'Descripción de prueba 29', 'media', 'abierta'),
-('Ticket 30', 'Descripción de prueba 30', 'alta', 'cerrada'),
-('Ticket 31', 'Descripción de prueba 31', 'baja', 'abierta'),
-('Ticket 32', 'Descripción de prueba 32', 'media', 'cerrada'),
-('Ticket 33', 'Descripción de prueba 33', 'alta', 'abierta'),
-('Ticket 34', 'Descripción de prueba 34', 'baja', 'abierta'),
-('Ticket 35', 'Descripción de prueba 35', 'media', 'abierta'),
-('Ticket 36', 'Descripción de prueba 36', 'alta', 'cerrada'),
-('Ticket 37', 'Descripción de prueba 37', 'baja', 'abierta'),
-('Ticket 38', 'Descripción de prueba 38', 'media', 'cerrada'),
-('Ticket 39', 'Descripción de prueba 39', 'alta', 'abierta'),
-('Ticket 40', 'Descripción de prueba 40', 'baja', 'abierta'),
-('Ticket 41', 'Descripción de prueba 41', 'media', 'abierta'),
-('Ticket 42', 'Descripción de prueba 42', 'alta', 'cerrada'),
-('Ticket 43', 'Descripción de prueba 43', 'baja', 'abierta'),
-('Ticket 44', 'Descripción de prueba 44', 'media', 'cerrada'),
-('Ticket 45', 'Descripción de prueba 45', 'alta', 'abierta'),
-('Ticket 46', 'Descripción de prueba 46', 'baja', 'abierta'),
-('Ticket 47', 'Descripción de prueba 47', 'media', 'abierta'),
-('Ticket 48', 'Descripción de prueba 48', 'alta', 'cerrada'),
-('Ticket 49', 'Descripción de prueba 49', 'baja', 'abierta'),
-('Ticket 50', 'Descripción de prueba 50', 'media', 'cerrada');
+USE inventario_iaw;
+
+-- 1. INSERTAR USUARIO ADMIN
+-- Usuario: admin
+-- Contraseña: 1234 (Hash generado con BCRYPT)
+INSERT INTO usuarios (username, password) VALUES 
+('admin', '$2y$10$8CnL.TT/YyjHR5ZZ71DciOXlgMWJr2rzNTstfUqHHnBmnBNlUmUm2');
+
+-- 2. INSERTAR 50 TICKETS DE PRUEBA
+-- Datos variados para probar paginación y filtros.
+
+INSERT INTO tickets (titulo, descripcion, prioridad, estado, created_at) VALUES
+('Fallo en impresora HP', 'La impresora de RRHH no conecta en red.', 'alta', 'abierta', NOW()),
+('Pantalla parpadea', 'El monitor del puesto 4 hace cosas raras.', 'media', 'en progreso', NOW()),
+('Instalar Office 2021', 'Necesario para el nuevo becario.', 'baja', 'cerrada', NOW()),
+('No funciona internet', 'El cable de red parece roto en sala 2.', 'alta', 'abierta', NOW()),
+('Ratón roto', 'Solicito cambio de ratón inalámbrico.', 'baja', 'abierta', NOW()),
+('Actualizar servidor', 'Parche de seguridad pendiente en Ubuntu.', 'alta', 'en progreso', NOW()),
+('Recuperar contraseña', 'Usuario bloqueado en el dominio.', 'media', 'cerrada', NOW()),
+('Error 404 en la web', 'La página de contacto no carga.', 'alta', 'abierta', NOW()),
+('PC muy lento', 'Posible virus en el equipo de contabilidad.', 'media', 'en progreso', NOW()),
+('Teclado sucio', 'Solicitud de limpieza o cambio.', 'baja', 'cerrada', NOW()),
+
+-- Bloque 2
+('Solicitud VPN', 'Configurar acceso remoto para Juan.', 'media', 'abierta', NOW()),
+('Backup fallido', 'El log indica error de escritura en disco.', 'alta', 'abierta', NOW()),
+('Cambio de toner', 'Impresora láser planta 2.', 'baja', 'cerrada', NOW()),
+('Wifi lento', 'Poca señal en la sala de reuniones.', 'media', 'en progreso', NOW()),
+('Licencia caducada', 'El antivirus pide renovación.', 'alta', 'abierta', NOW()),
+('Ruido en la torre', 'El ventilador hace mucho ruido.', 'baja', 'abierta', NOW()),
+('No imprime a color', 'Configuración de drivers incorrecta.', 'media', 'cerrada', NOW()),
+('Solicitud monitor extra', 'Para desarrollo de software.', 'baja', 'abierta', NOW()),
+('Fallo de DNS', 'No resuelven dominios internos.', 'alta', 'en progreso', NOW()),
+('Cambio de sitio', 'Mover equipos a la nueva oficina.', 'media', 'abierta', NOW()),
+
+-- Bloque 3
+('Error en Excel', 'Se cierra al abrir macros.', 'media', 'abierta', NOW()),
+('Proyector fundido', 'Lámpara del proyector agotada.', 'media', 'cerrada', NOW()),
+('Cable HDMI roto', 'Sustitución urgente para reunión.', 'alta', 'abierta', NOW()),
+('Altavoces no suenan', 'Problema de drivers de audio.', 'baja', 'cerrada', NOW()),
+('Webcam no detectada', 'Zoom no reconoce la cámara.', 'media', 'en progreso', NOW()),
+('Disco lleno', 'Servidor de ficheros al 99%.', 'alta', 'abierta', NOW()),
+('Crear cuenta de correo', 'Nuevo empleado en marketing.', 'baja', 'abierta', NOW()),
+('Spam masivo', 'Revisar filtros antispam.', 'alta', 'en progreso', NOW()),
+('Permisos de carpeta', 'Acceso denegado a /compartido.', 'media', 'cerrada', NOW()),
+('Ratón sin pilas', 'Solicitud de pilas AA.', 'baja', 'cerrada', NOW()),
+
+-- Bloque 4
+('Fuente de alimentación', 'Huele a quemado en el PC 03.', 'alta', 'abierta', NOW()),
+('Actualizar Java', 'Requerido para la web de hacienda.', 'media', 'en progreso', NOW()),
+('Error al escanear', 'Escáner no envía a carpeta.', 'media', 'abierta', NOW()),
+('Teclado numérico fallo', 'No marcan los números.', 'baja', 'cerrada', NOW()),
+('Monitor sin señal', 'Revisar cable VGA.', 'baja', 'abierta', NOW()),
+('Instalar Photoshop', 'Licencia adquirida para diseño.', 'media', 'abierta', NOW()),
+('Fallo de tarjeta gráfica', 'Rayas en la pantalla.', 'alta', 'en progreso', NOW()),
+('Router colgado', 'Necesita reinicio manual.', 'alta', 'cerrada', NOW()),
+('Móvil de empresa', 'Configurar correo en Android.', 'media', 'abierta', NOW()),
+('Tablet bloqueada', 'Olvido de patrón de desbloqueo.', 'baja', 'abierta', NOW()),
+
+-- Bloque 5
+('Silla rota', 'No es informático pero lo reportan aquí.', 'baja', 'cerrada', NOW()),
+('Luz parpadea', 'Fluorescente sobre el rack.', 'baja', 'abierta', NOW()),
+('Servidor SQL lento', 'Optimizar consultas.', 'alta', 'en progreso', NOW()),
+('Error de certificado SSL', 'Web corporativa no segura.', 'alta', 'abierta', NOW()),
+('Puerto USB roto', 'Frontal de la torre hundido.', 'media', 'cerrada', NOW()),
+('Instalar 7zip', 'Compresor de archivos.', 'baja', 'abierta', NOW()),
+('Pantalla azul (BSOD)', 'El equipo se reinicia solo.', 'alta', 'en progreso', NOW()),
+('No abre PDF', 'Reinstalar Adobe Reader.', 'media', 'abierta', NOW()),
+('Fallo de sincronización', 'OneDrive no actualiza.', 'media', 'cerrada', NOW()),
+('Fin de soporte', 'Planificar migración de Windows 10.', 'alta', 'abierta', NOW());

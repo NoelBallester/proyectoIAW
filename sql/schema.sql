@@ -1,78 +1,63 @@
+/* =================================================================
+   PROYECTO: Gestión de Incidencias
+   FICHERO: sql/schema.sql
+   DESCRIPCIÓN: Estructura de la base de datos (Tablas e índices).
+   ALUMNOS: Noel Ballester Baños y Ángela Navarro Nieto 2º ASIR
+   ================================================================= */
+
 -- 1. PREPARACIÓN DE LA BASE DE DATOS
 -- ---------------------------------------------------------
+-- Borramos la BD si existe para empezar de cero (útil en desarrollo)
 DROP DATABASE IF EXISTS inventario_iaw;
-
 CREATE DATABASE inventario_iaw CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 USE inventario_iaw;
-
 
 -- 2. CREACIÓN DE TABLAS
 -- ---------------------------------------------------------
 
--- Tabla de Tickets (incidencias)
-CREATE TABLE IF NOT EXISTS tickets (
+-- TABLA DE USUARIOS
+-- Guardará los administradores con acceso al panel.
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL, -- Hash de la contraseña
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- TABLA DE TICKETS (INCIDENCIAS)
+-- Esta es la definición correcta que coincide con tu código PHP (titulo, descripcion, etc.)
+CREATE TABLE tickets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(200) NOT NULL,
     descripcion TEXT NOT NULL,
     prioridad ENUM('baja','media','alta') DEFAULT 'media',
     estado ENUM('abierta','en progreso','cerrada') DEFAULT 'abierta',
+    
+    -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Soft Delete: Si tiene fecha, está borrado. Si es NULL, está activo.
     deleted_at TIMESTAMP NULL DEFAULT NULL
-);
+) ENGINE=InnoDB;
 
--- Tabla de Usuarios (para el login de la aplicación web)
-CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL, -- ¡Importante! Aquí guardaremos el HASH, nunca la clave real
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Tabla de Items (El inventario en sí)
-CREATE TABLE items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    categoria VARCHAR(50),
-    ubicacion VARCHAR(50),
-    stock INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Tabla de Auditoría (Requisito obligatorio para registrar borrados)
-CREATE TABLE auditoria (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    accion VARCHAR(255) NOT NULL, -- Descripción de lo que pasó (Ej: "Borrado item 5")
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Auditoría de tickets
-CREATE TABLE IF NOT EXISTS ticket_audit (
+-- TABLA DE AUDITORÍA
+-- Registra quién hizo qué. Vital para el requisito de "Transacción".
+CREATE TABLE ticket_audit (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ticket_id INT NOT NULL,
-    action VARCHAR(50) NOT NULL,
+    action VARCHAR(50) NOT NULL, -- Ej: 'borrado'
+    user_id INT NOT NULL,        -- ID del usuario que hizo la acción
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX (ticket_id)
-);
+    
+    -- Relaciones (Foreign Keys)
+    FOREIGN KEY (user_id) REFERENCES usuarios(id)
+    -- No vinculamos ticket_id con FK estricta para permitir guardar logs de tickets borrados físicamente si fuera necesario
+) ENGINE=InnoDB;
 
--- Tabla de Tickets (Soporte técnico)
-CREATE TABLE tickets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    priority ENUM('baja','media','alta') DEFAULT 'media',
-    status ENUM('abierta','cerrada') DEFAULT 'abierta',
-    creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    actualizado TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    eliminado TIMESTAMP NULL DEFAULT NULL
-);
-
--- 3. GESTIÓN DE USUARIOS DE MYSQL (ACCESO REMOTO)
+-- 3. GESTIÓN DE USUARIOS DE MYSQL
 -- ---------------------------------------------------------
-
+-- Crea el usuario para la conexión PDO
 CREATE USER IF NOT EXISTS 'NoelYAngela'@'%' IDENTIFIED BY 'IAWAN';
-
 GRANT ALL PRIVILEGES ON inventario_iaw.* TO 'NoelYAngela'@'%';
-
 FLUSH PRIVILEGES;
