@@ -47,8 +47,8 @@ $temaActual = $_COOKIE['tema'] ?? 'claro';
             <div class="form-group">
                 <label for="tema">Selecciona tema:</label>
                 <select name="tema" id="tema">
-                    <option value="claro" <?= $temaActual === 'claro' ? 'selected' : '' ?>>🌤️ Claro</option>
-                    <option value="oscuro" <?= $temaActual === 'oscuro' ? 'selected' : '' ?>>🌙 Oscuro</option>
+                    <option value="claro" <?= $temaActual === 'claro' ? 'selected' : '' ?>> Claro</option>
+                    <option value="oscuro" <?= $temaActual === 'oscuro' ? 'selected' : '' ?>> Oscuro</option>
                 </select>
             </div>
             <button type="submit" class="btn-primary">💾 Guardar Preferencia</button>
