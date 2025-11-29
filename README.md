@@ -1,60 +1,35 @@
-# ProyectoIAW
-### Hecho por: Noel Ballester Baños y Ángela Navarro Nieto. 
-Hemos desarrollado una aplicación web en PHP puro que permite gestionar incidencias, donde se incluyen los requisitos mínimos y algunos extras.
+# Proyecto IAW - Gestión de incidencias.
+## Hecho por: Noel Ballester Baños y Ángela Navarro Nieto 
 
-Esta aplicación permite: 
-- Iniciar sesión con usuario y contraseña.
-- Crear, ver, editar y borrar incidencias.
-- Buscar y paginar el listado de incidencias.
-- Ver el detalle de cada incidencia.
-- Guardar una preferencia visual en un cookie. (Tema oscuro/claro).
-- Proteger todas las ruts privadas con sesión.
-- Validar formularios en el servidor.
-- Evitar reenvíos con PRG tras POST.
-- Usar tokens CSRF en todos los formularios.
-- Escapar salidas para prevenir XSS.
-- Conectar a la base de datos con PDO y SQL preparado.
-- Borrar con transacción y registrar en tabla de auditoría.
-
-## Estructura del proyecto.
+## Estructura de proyecto
 app/
-├── pdo.php              # Conexión PDO
-├── auth.php             # Sesión y protección
-├── csrf.php             # Tokens CSRF
-├── utils.php            # Validaciones y helpers
+ ├── pdo.php          # Conexión PDO
+ ├── auth.php         # Gestión de sesión y protección
+ ├── csrf.php         # Tokens CSRF
+ └── utils.php        # Validaciones y helpers
 
 public/
-├── login.php            # Login
-├── logout.php           # Logout
-├── index.php            # Panel principal
-├── tickets_list.php     # Listado con búsqueda y paginación
-├── tickets_form.php     # Alta y edición
-├── tickets_show.php     # Detalle
-├── tickets_delete.php   # Borrado con auditoría
-├── preferencias.php     # Tema visual por cookie
+ ├── login.php        # Login
+ ├── logout.php       # Logout
+ ├── index.php        # Panel principal
+ ├── lista_tickets.php # Listado con búsqueda y paginación
+ ├── editar_ticket.php # Formulario de tickets
+ ├── ver_tickets.php # Detalles de tickets
+ ├── borrar_ticket.php # Borrado con auditoría
+ └── preferencias.php # Tema visual por cookie
 
 sql/
-├── schema.sql           # Tablas e índices
-├── seed.sql             # Datos de ejemplo (≥50)
+ ├── schema.sql       # Tablas e índices
+ └── seed.sql         # Datos de ejemplo (≥50)
 
-uploads/                 # Si hay adjuntos
-README.md
+### Instalación en Ubuntu 
+gir clone https://github.com/NoelBallester/proyectoIAW
+cd proyectoIAW
 
-## Extras añadidos: 
+### Crea la base de datos MySQL
+mysql -u root -p
+CREATE DATABASE iaw;
 
-## Cómo arrancarlo en Ubuntu
-git clone https://github.com/NoelBallester/proyectoIAW.git
-cd proyecyoIAW
-
---- 
-## Base de datos
-La base de datos se llama "iaw" y está creada en MySQL. 
-
-### Archivos SQL
-- ''
-- ''
-
-### Cómo importar la base de datos 
-En bash:
-mysql -u root -p 
-Usuario:
+Añade los archivos SQL:
+mysql -u root -p iaw < sql/schema.sql
+mysql -u root -p iaw < sql/seed.sql
