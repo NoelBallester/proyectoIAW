@@ -69,20 +69,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="<?= htmlspecialchars(body_theme_class()) ?>">
     <div class="login-container panel narrow">
         <div class="login-header">
-            <h1>🔐 Gestor de Incidencias</h1>
+            <h1> Gestor de Incidencias</h1>
             <p class="subheader">Inicia sesión para continuar</p>
         </div>
 
         <div class="login-body content">
             <?php if ($error): ?>
-                <div class="error-box">⚠️ <?= htmlspecialchars($error) ?></div>
+                <div class="error-box"> <?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
             <form method="POST">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                 
                 <div class="form-group">
-                    <label for="username">👤 Usuario</label>
+                    <label for="username"> Usuario</label>
                     <input 
                         type="text" 
                         id="username" 
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-group">
-                    <label for="password">🔒 Contraseña</label>
+                    <label for="password"> Contraseña</label>
                     <input 
                         type="password" 
                         id="password" 
@@ -105,10 +105,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     >
                 </div>
 
-                <button type="submit" class="btn-primary" style="width:100%">🚀 Iniciar Sesión</button>
+                <button type="submit" class="btn-primary" style="width:100%"> Iniciar Sesión</button>
             </form>
             <div class="nav" style="margin-top:25px;">
-                <a href="preferencias.php">⚙️ Preferencias</a>
+                <a href="preferencias.php"> Preferencias</a>
             </div>
         </div>
     </div>
