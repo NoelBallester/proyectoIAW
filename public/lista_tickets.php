@@ -60,11 +60,11 @@ $totalPages = max(1, ceil($total / $perPage));
 <body class="<?= htmlspecialchars(body_theme_class()) ?>">
 <div class="container">
     <div class="header">
-        <h1>📋 Incidencias</h1>
+        <h1> Incidencias</h1>
         <div class="nav">
-            <a href="index.php">🏠 Inicio</a>
-            <a href="editar_ticket.php">➕ Nueva</a>
-            <a href="preferencias.php">⚙️ Preferencias</a>
+            <a href="index.php"> Inicio</a>
+            <a href="editar_ticket.php"> Nueva</a>
+            <a href="preferencias.php"> Preferencias</a>
         </div>
     </div>
     <div class="content wide">
@@ -78,8 +78,8 @@ $totalPages = max(1, ceil($total / $perPage));
             <label style="display:flex; gap:4px; align-items:center; font-size:.85rem;">
                 <input type="checkbox" name="show_deleted" value="1" <?= $showDeleted ? 'checked' : '' ?>> Mostrar borrados
             </label>
-            <button type="submit" class="btn-primary" style="flex:0 0 auto;">🔍 Buscar</button>
-            <a href="editar_ticket.php" class="btn-secondary" style="flex:0 0 auto;">➕ Crear</a>
+            <button type="submit" class="btn-primary" style="flex:0 0 auto;"> Buscar</button>
+            <a href="editar_ticket.php" class="btn-secondary" style="flex:0 0 auto;"> Crear</a>
         </form>
         <div class="table-wrapper">
             <table class="table">
@@ -137,8 +137,8 @@ $totalPages = max(1, ceil($total / $perPage));
         ?>
         <div class="pagination" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
             <?php if ($page > 1): ?>
-                <a href="<?= build_list_url(1) ?>">⏮️</a>
-                <a href="<?= build_list_url($page - 1) ?>">◀️</a>
+                <a href="<?= build_list_url(1) ?>"></a>
+                <a href="<?= build_list_url($page - 1) ?>"></a>
             <?php endif; ?>
             <?php
             // Mostrar rango compacto (máx 9 páginas visibles)
@@ -162,8 +162,8 @@ $totalPages = max(1, ceil($total / $perPage));
             }
             ?>
             <?php if ($page < $totalPages): ?>
-                <a href="<?= build_list_url($page + 1) ?>">▶️</a>
-                <a href="<?= build_list_url($totalPages) ?>">⏭️</a>
+                <a href="<?= build_list_url($page + 1) ?>"></a>
+                <a href="<?= build_list_url($totalPages) ?>"></a>
             <?php endif; ?>
         </div>
         <footer>
